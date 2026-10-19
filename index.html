@@ -3,15 +3,546 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>나의 포트폴리오</title>
+  <title>송유진 | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-    h1 { color: #333; }
-    p { color: #666; line-height: 1.6; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F7F5;
+      --surface: #FFFFFF;
+      --text: #1A1A1A;
+      --muted: #6B6B6B;
+      --accent: #2A6EE4;
+      --accent-light: #EEF3FD;
+      --border: #E4E4E0;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      height: 56px;
+      background: rgba(247,247,245,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* LAYOUT */
+    main { max-width: 720px; margin: 0 auto; padding: 0 32px; }
+
+    section {
+      padding: 96px 0 64px;
+    }
+    section + section {
+      border-top: 1px solid var(--border);
+    }
+
+    /* HERO */
+    #hero {
+      padding-top: 140px;
+      padding-bottom: 80px;
+    }
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+    .hero-name {
+      font-size: clamp(40px, 6vw, 60px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+    .hero-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #1a5acc; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: #aaa; }
+
+    /* SECTION HEADER */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 32px;
+    }
+
+    /* ABOUT */
+    .about-text {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text);
+      max-width: 600px;
+    }
+    .edu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+    .edu-row:first-of-type { border-top: 1px solid var(--border); margin-top: 40px; }
+    .edu-name { font-weight: 500; font-size: 15px; }
+    .edu-detail { font-size: 13px; color: var(--muted); }
+    .edu-period {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .exchange-badge {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 11px;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .skill-category {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--bg);
+      color: var(--text);
+      padding: 3px 9px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* PROJECTS */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .project-card:hover { border-color: #bbb; }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .project-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .project-period {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-top: 3px;
+    }
+    .project-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .project-points {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+    .project-points li {
+      font-size: 13px;
+      color: var(--text);
+      padding: 3px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+    .project-points li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+    }
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag-accent {
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+    .github-link {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+    .github-link:hover { color: var(--text); }
+
+    /* ACTIVITIES */
+    .activity-row {
+      display: flex;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .activity-row:first-of-type { border-top: 1px solid var(--border); }
+    .activity-period {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-top: 2px;
+      min-width: 90px;
+    }
+    .activity-content {}
+    .activity-name { font-weight: 500; font-size: 15px; margin-bottom: 4px; }
+    .activity-desc { font-size: 13px; color: var(--muted); }
+
+    /* CONTACT */
+    .contact-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+    .contact-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      width: 60px;
+    }
+    .contact-value {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .contact-value:hover { color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 48px 0;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 20px; }
+      main { padding: 0 20px; }
+      #hero { padding-top: 100px; }
+      .edu-row { flex-direction: column; gap: 4px; }
+      .project-header { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
   </style>
 </head>
 <body>
-  <h1>안녕하세요, 저는 yoojinsong-cs 입니다 👋</h1>
-  <p>여기에 자기소개를 작성하세요.</p>
+
+<nav>
+  <span class="nav-name">yoojinsong-cs</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <p class="hero-tag">CS Student · Developer</p>
+    <h1 class="hero-name">송유진</h1>
+    <p class="hero-sub">컴퓨터AI학부 재학생. LLM, 데이터, 웹 개발에 관심이 많습니다.</p>
+    <div class="hero-links">
+      <a href="https://github.com/yoojinsong-cs" target="_blank" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="mailto:songyujin625@naver.com" class="btn btn-ghost">이메일 보내기</a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label">ABOUT</p>
+    <p class="about-text">
+      동국대학교 컴퓨터AI학부에 재학 중이며, 프랑스 IPSA에서 교환학생을 경험했습니다.
+      LLM 텍스트 워터마킹 연구와 웹 프론트엔드 개발 프로젝트를 통해 이론과 실무를 함께 쌓아왔습니다.
+      데이터 사이언스와 AI에 관심이 많고, 문제를 코드로 해결하는 것을 즐깁니다.
+    </p>
+
+    <div class="edu-row">
+      <div>
+        <div class="edu-name">동국대학교</div>
+        <div class="edu-detail">컴퓨터AI학부</div>
+      </div>
+      <span class="edu-period">2023.03 – 재학</span>
+    </div>
+    <div class="edu-row">
+      <div>
+        <div class="edu-name">
+          Institut Polytechnique des Sciences Avancées
+          <span class="exchange-badge">교환학생</span>
+        </div>
+        <div class="edu-detail">프랑스 파리</div>
+      </div>
+      <span class="edu-period">2026.01 – 2026.05</span>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <p class="section-label">SKILLS</p>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <p class="skill-category">LANGUAGE</p>
+        <div class="skill-tags">
+          <span class="tag">Python</span>
+          <span class="tag">C</span>
+          <span class="tag">C++</span>
+          <span class="tag">Java</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-category">DATA</p>
+        <div class="skill-tags">
+          <span class="tag">Pandas</span>
+          <span class="tag">NumPy</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-category">FRONTEND</p>
+        <div class="skill-tags">
+          <span class="tag">Flutter</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-category">TOOLS</p>
+        <div class="skill-tags">
+          <span class="tag">Git</span>
+          <span class="tag">GitHub</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label">PROJECTS</p>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3 class="project-title">LLM 텍스트 워터마킹 라이브러리</h3>
+        <span class="project-period">2025.09 – 2025.12</span>
+      </div>
+      <p class="project-desc">캡스톤디자인 팀 프로젝트. LLM이 생성한 텍스트에 워터마크를 삽입하고 검출하는 Python 라이브러리 개발.</p>
+      <ul class="project-points">
+        <li>Python 기반 워터마킹 및 검출 라이브러리 개발</li>
+        <li>실험·데모 포함 재사용 가능한 모듈로 패키징</li>
+        <li>다양한 실험으로 워터마킹 강건성 및 검출 성능 평가</li>
+      </ul>
+      <div class="project-footer">
+        <div class="project-tags">
+          <span class="tag-accent">Python</span>
+          <span class="tag-accent">LLM</span>
+          <span class="tag-accent">NLP</span>
+        </div>
+        <a href="https://github.com/Son9YuJin/CapstoneDesign" target="_blank" class="github-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3 class="project-title">오픈소스 소프트웨어 프로젝트</h3>
+        <span class="project-period">2025.03 – 2025.06</span>
+      </div>
+      <p class="project-desc">팀 기반 오픈소스 웹 애플리케이션의 프론트엔드 개발 담당.</p>
+      <ul class="project-points">
+        <li>사용자 인터페이스(UI) 구현 및 기능 요구사항 반영</li>
+        <li>팀 협업을 통한 오픈소스 기여</li>
+      </ul>
+      <div class="project-footer">
+        <div class="project-tags">
+          <span class="tag-accent">Frontend</span>
+          <span class="tag-accent">Web</span>
+        </div>
+        <a href="https://github.com/CSID-DGU/2025-1-CSC4004-1-3-Upper-Bound" target="_blank" class="github-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="activities">
+    <p class="section-label">ACTIVITIES</p>
+    <div class="activity-row">
+      <span class="activity-period">2024.07 – 08</span>
+      <div class="activity-content">
+        <p class="activity-name">Data Science 2024</p>
+        <p class="activity-desc">NAVER × 동국대학교 — Python 기반 데이터 분석 및 머신러닝 기초</p>
+      </div>
+    </div>
+    <div class="activity-row">
+      <span class="activity-period">2023.07 – 08</span>
+      <div class="activity-content">
+        <p class="activity-name">AI Curriculum</p>
+        <p class="activity-desc">SK텔레콤 × 동국대학교 — AI 및 머신러닝 기초 이론과 실습</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label">CONTACT</p>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <span class="contact-label">email</span>
+        <a href="mailto:songyujin625@naver.com" class="contact-value">songyujin625@naver.com</a>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">phone</span>
+        <span class="contact-value">010-3937-8008</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">github</span>
+        <a href="https://github.com/yoojinsong-cs" target="_blank" class="contact-value">github.com/yoojinsong-cs</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 송유진 · Built with GitHub Pages
+</footer>
+
 </body>
 </html>
